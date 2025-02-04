@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import classNames from "classnames";
 import { Left, Right } from "neetoicons";
 import { Button } from "neetoui";
@@ -10,6 +12,12 @@ const Carousel = ({ imageUrls, title, currentIndex, setCurrentIndex }) => {
     setCurrentIndex(
       prevIndex => (prevIndex - 1 + imageUrls.length) % imageUrls.length
     );
+
+  useEffect(() => {
+    const interval = setInterval(handleNext, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex items-center">
