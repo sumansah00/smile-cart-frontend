@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 
 import productsApi from "apis/products";
-import { Header, PageNotFound, PageLoader } from "components/commons";
+import {
+  Header,
+  PageLoader,
+  PageNotFound,
+  AddToCart,
+} from "components/commons";
 import { Typography } from "neetoui";
 import { append, isNotNil } from "ramda";
 import { useParams } from "react-router-dom";
@@ -9,18 +14,19 @@ import { useParams } from "react-router-dom";
 import Carousel from "./Carousel";
 
 const Product = () => {
-  const { slug } = useParams();
-
   const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState({});
   const [isError, setIsError] = useState(false);
+  const [product, setProduct] = useState({});
+
+  const { slug } = useParams();
 
   const fetchProduct = async () => {
     try {
       const response = await productsApi.show(slug);
       setProduct(response);
-    } catch {
+    } catch (error) {
       setIsError(true);
+      console.log("An error occurred:", error);
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +48,7 @@ const Product = () => {
   if (isError) return <PageNotFound />;
 
   return (
-    <div className="px-6 pb-6">
+    <>
       <Header title={name} />
       <div className="mt-16 flex gap-4">
         <div className="w-2/5">
@@ -63,9 +69,10 @@ const Product = () => {
           <Typography className="font-semibold text-green-600">
             {discountPercentage}% off
           </Typography>
+          <AddToCart {...{ slug }} />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 export default Product;
