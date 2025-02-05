@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 import productsApi from "apis/product";
-import { Spinner, Typography } from "neetoui";
+import { Typography, Spinner } from "neetoui";
 import { append, isNotNil } from "ramda";
 
 import Carousel from "./Carousel";
-// import { IMAGE_URLS } from "./constants";
 
 const Product = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,9 +12,8 @@ const Product = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await productsApi.show();
-      setProduct(response.data);
-      console.log("Product fetched successfully:", response.data);
+      const product = await productsApi.show();
+      setProduct(product);
     } catch (error) {
       console.log("An error occurred:", error);
     } finally {
@@ -28,6 +26,7 @@ const Product = () => {
   }, []);
 
   const { name, description, mrp, offerPrice, imageUrls, imageUrl } = product;
+
   const totalDiscounts = mrp - offerPrice;
   const discountPercentage = ((totalDiscounts / mrp) * 100).toFixed(1);
 
@@ -45,9 +44,9 @@ const Product = () => {
         <Typography className="py-2 text-4xl font-semibold" style="h1">
           {name}
         </Typography>
-        <hr className="border-2 border-black" />
+        <hr className="neeto-ui-border-black border-2" />
       </div>
-      <div className="mt-6 flex gap-4">
+      <div className="mt-16 flex gap-4">
         <div className="w-2/5">
           <div className="flex justify-center gap-16">
             {isNotNil(imageUrls) ? (
@@ -71,5 +70,4 @@ const Product = () => {
     </div>
   );
 };
-
 export default Product;
