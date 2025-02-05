@@ -1,5 +1,6 @@
 import axios from "axios";
-import { keysToCamelCase } from "neetocist";
+import { keysToCamelCase, serializeKeysToSnakeCase } from "neetocist";
+import { evolve } from "ramda";
 
 const setHttpHeaders = () => {
   axios.defaults.headers = {
@@ -20,9 +21,19 @@ const responseInterceptors = () => {
   });
 };
 
+const requestInterceptors = () => {
+  axios.interceptors.request.use(request =>
+    evolve(
+      { data: serializeKeysToSnakeCase, params: serializeKeysToSnakeCase },
+      request
+    )
+  );
+};
+
 export default function initializeAxios() {
   axios.defaults.baseURL =
     "https://smile-cart-backend-staging.neetodeployapp.com/";
   setHttpHeaders();
   responseInterceptors();
+  requestInterceptors();
 }
