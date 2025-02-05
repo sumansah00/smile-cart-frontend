@@ -2,19 +2,23 @@ import { useState, useEffect } from "react";
 
 import productsApi from "apis/products";
 import { Header, PageLoader } from "components/commons";
+import useDebounce from "hooks/useDebounce";
 import { Search } from "neetoicons";
-import { Input } from "neetoui";
+import { Input, NoData } from "neetoui";
+import { isEmpty } from "ramda";
 
 import ProductListItem from "./ProductListItem";
 
 const ProductList = () => {
-  const [searchKey, setSearchKey] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const [searchKey, setSearchKey] = useState("");
+
+  const debouncedSearchKey = useDebounce(searchKey);
 
   const fetchProducts = async () => {
     try {
-      const data = await productsApi.fetch({ searchTerm: searchKey });
+      const data = await productsApi.fetch({ searchTerm: debouncedSearchKey });
       setProducts(data.products);
     } catch (error) {
       console.log("An error occurred:", error);
@@ -24,9 +28,8 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect called");
     fetchProducts();
-  }, [searchKey]);
+  }, [debouncedSearchKey]);
 
   if (isLoading) {
     return <PageLoader />;
@@ -36,7 +39,7 @@ const ProductList = () => {
     <div className="flex h-screen flex-col">
       <Header
         shouldShowBackButton={false}
-        title="Smile cart"
+        title="Smile Cart"
         actionBlock={
           <Input
             placeholder="Search products"
@@ -47,11 +50,15 @@ const ProductList = () => {
           />
         }
       />
-      <div className="grid grid-cols-2 justify-items-center gap-y-8 p-4 md:grid-cols-3 lg:grid-cols-4">
-        {products.map(product => (
-          <ProductListItem key={product.slug} {...product} />
-        ))}
-      </div>
+      {isEmpty(products) ? (
+        <NoData className="h-full w-full" title="No products to show" />
+      ) : (
+        <div className="grid grid-cols-2 justify-items-center gap-y-8 p-4 md:grid-cols-3 lg:grid-cols-4">
+          {products.map(product => (
+            <ProductListItem key={product.slug} {...product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
