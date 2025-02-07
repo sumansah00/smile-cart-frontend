@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 import productsApi from "apis/products";
 import { Header, PageLoader } from "components/commons";
 import useDebounce from "hooks/useDebounce";
+import i18n from "i18next";
 import { Search } from "neetoicons";
 import { Input, NoData } from "neetoui";
 import { isEmpty } from "ramda";
+import withTitle from "utils/withTitle";
 
 import ProductListItem from "./ProductListItem";
 
@@ -63,4 +65,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default withTitle(ProductList, i18n.t("title"));
