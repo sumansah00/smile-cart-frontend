@@ -31,5 +31,13 @@
   "state": "State",
   "selectState": "Select the state",
   "zipCode": "Zip code",
-  "enterZipCode": "Enter zip code"
+  "enterZipCode": "Enter zip code",
+  "confirmOrder": "Confirm order",
+  "error": {
+    "noInternetConnection": "No Internet Connection",
+    "networkError": "Network Error"
+  },
+  "order": {
+    "successfullyPlaced": "Order has been successfully placed"
+  }
 }
